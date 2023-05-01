@@ -23,7 +23,7 @@ app.post('/generate', async (req, res) => {
         model: 'image-alpha-001',
         prompt,
         n: 1,
-        size: '256x256',
+        size: '512x512',
       }),
     });
 

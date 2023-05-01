@@ -8,8 +8,15 @@
 <body>
   <h1>Image Generator</h1>
   <form>
-    <label for="prompt">Enter a prompt:</label>
-    <input type="text" id="prompt" name="prompt" required>
+    <label for="prompt">Texture:</label>
+    <input type="text" id="prompt" name="prompt" placeholder="enter material..." required>
+
+    <label for="style">Style:</label>
+    <select id="style" name="style" required>
+        <option value="a cal art cartoonist">Cartoon</option>
+        <option value="a photorealistic image">Photo</option>
+    </select>
+
     <button type="submit">Generate Image</button>
   </form>
   <div id="image_container"></div>
