@@ -7,30 +7,9 @@
 </head>
 <body>
   <h1>Image Generator</h1>
-  <form id="form">
+  <form>
     <label for="prompt">Enter a prompt:</label>
     <input type="text" id="prompt" name="prompt" required>
-    <!-- Resolution selection -->
-<label for="resolution">Resolution:</label>
-<select id="resolution" name="resolution">
-  <option value="256">256x256</option>
-  <option value="512">512x512</option>
-  <option value="1024">1024x1024</option>
-  <option value="2048">2048x2048</option>
-  <option value="4096">4096x4096</option>
-</select>
-
-<!-- Output format selection -->
-<label for="format">Format:</label>
-<select id="format" name="format">
-  <option value="png">PNG</option>
-  <option value="jpg">JPG</option>
-</select>
-
-<!-- Theme input -->
-<label for="theme">Theme:</label>
-<input type="text" id="theme" name="theme" placeholder="Enter theme or style">
-
     <button type="submit">Generate Image</button>
   </form>
   <div id="image_container"></div>
