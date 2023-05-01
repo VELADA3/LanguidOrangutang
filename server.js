@@ -1,38 +1,37 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import cors from 'cors';
-import fetch from 'node-fetch';
-import * as dotenv from 'dotenv';
+import openai from 'openai';
+import dotenv from 'dotenv';
 
 dotenv.config();
+openai.apiKey = process.env.OPENAI_API_KEY;
 
 const app = express();
+app.use(bodyParser.json());
 app.use(cors());
-app.use(express.json());
 
-app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
-
+app.post('/', async (req, res) => {
   try {
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'image-alpha-001',
-        prompt,
-        n: 1,
-        size: '256x256',
-      }),
+    const { prompt, resolution, format, theme } = req.body;
+    const promptWithRequirements = `${prompt}\nTheme: ${theme}\nSeamless tiling texture\nResolution: ${resolution}x${resolution}\nFormat: ${format}`;
+
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: `${promptWithRequirements}`,
+      max_tokens: 150,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
     });
 
-    const data = await response.json();
-    res.status(200).send(data);
+    const imageURL = response.choices[0].text.trim();
+    res.send({ imageURL });
   } catch (error) {
-    console.error(error);
+    console.error(error)
     res.status(500).send(error || 'Something went wrong');
   }
 });
 
-app.listen(5000, () => console.log('Server started on http://localhost:5000'));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
