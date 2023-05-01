@@ -1,37 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Generator</title>
 </head>
 <body>
-    <form>
-        <label for="prompt">Prompt:</label>
-        <input type="text" name="prompt" id="prompt" required>
-        
-        <label for="style">Theme/Style:</label>
-        <input type="text" name="style" id="style" required>
-
-        <label for="resolution">Resolution:</label>
-        <select name="resolution" id="resolution">
-            <option value="256">256x256</option>
-            <option value="512">512x512</option>
-            <option value="1024">1024x1024</option>
-            <option value="2048">2048x2048</option>
-            <option value="4096">4096x4096</option>
-        </select>
-
-        <label for="format">Format:</label>
-        <select name="format" id="format">
-            <option value="png">PNG</option>
-            <option value="jpg">JPG</option>
-        </select>
-
-        <button type="submit">Generate Image</button>
-    </form>
-
-    <img id="generated_image" src="" alt="Generated Image" style="display:none;">
-    <script src="script.js"></script>
+  <h1>Image Generator</h1>
+  <form>
+    <label for="prompt">Enter a prompt:</label>
+    <input type="text" id="prompt" name="prompt" required>
+    <button type="submit">Generate Image</button>
+  </form>
+  <div id="image_container"></div>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>

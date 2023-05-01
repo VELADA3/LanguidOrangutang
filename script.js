@@ -1,58 +1,33 @@
-const handleSubmit = async (e) => {
-  e.preventDefault()
+const form = document.querySelector('form');
+const imageContainer = document.querySelector('#image_container');
 
-  const data = new FormData(form)
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-  const userPrompt = data.get('prompt');
-  const imageResolution = data.get('resolution');
-  const imageFormat = data.get('format');
-  const imageTheme = data.get('theme');
+  const formData = new FormData(form);
+  const prompt = formData.get('prompt');
 
-  // user's chatstripe
-  chatContainer.innerHTML += chatStripe(false, userPrompt)
-
-  // bot's chatstripe
-  const uniqueId = generateUniqueId()
-  chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
-
-  // to focus scroll to the bottom 
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-
-  // specific message div 
-  const messageDiv = document.getElementById(uniqueId)
-
-  // messageDiv.innerHTML = "..."
-  loader(messageDiv)
-
-  const response = await fetch('http://localhost:5000', {
+  try {
+    const response = await fetch('http://localhost:5000/generate', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-          prompt: userPrompt,
-          resolution: imageResolution,
-          format: imageFormat,
-          theme: imageTheme
-      })
-  })
+        prompt,
+      }),
+    });
 
-  clearInterval(loadInterval)
-  messageDiv.innerHTML = " "
-
-  if (response.ok) {
-      const data = await response.blob();
-      const url = URL.createObjectURL(data);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `image.${imageFormat}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  } else {
-      const err = await response.text()
-
-      messageDiv.innerHTML = "Something went wrong"
-      alert(err)
+    if (response.ok) {
+      const data = await response.json();
+      const imageUrl = data.data[0].url;
+      imageContainer.innerHTML = `<img src="${imageUrl}" alt="Generated Image">`;
+    } else {
+      const err = await response.text();
+      imageContainer.innerHTML = '<p>Something went wrong</p>';
+      console.error(err);
+    }
+  } catch (error) {
+    console.error(error);
   }
-}
+});

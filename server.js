@@ -1,34 +1,38 @@
-import express from 'express'
-import cors from 'cors'
-import { Configuration, OpenAIApi } from 'openai'
+import express from 'express';
+import cors from 'cors';
+import fetch from 'node-fetch';
+import * as dotenv from 'dotenv';
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+dotenv.config();
 
-const openai = new OpenAIApi(configuration);
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const app = express()
-app.use(cors())
-app.use(express.json())
+app.post('/generate', async (req, res) => {
+  const { prompt } = req.body;
 
-app.get('/', async (req, res) => {
-  res.status(200).send({
-    message: 'Hello from Image Generator!'
-  })
-})
-
-app.post('/', async (req, res) => {
   try {
-    const { prompt, resolution, format, style } = req.body;
-    const promptWithStyle = `Create a ${resolution}x${resolution} seamless, tiling texture image in the theme/style of "${style}". ${prompt}`;
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'image-alpha-001',
+        prompt,
+        n: 1,
+        size: '256x256',
+      }),
+    });
 
-    // Code to generate image using OpenAI API with the updated promptWithStyle
-
+    const data = await response.json();
+    res.status(200).send(data);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).send(error || 'Something went wrong');
   }
-})
+});
 
-app.listen(5000, () => console.log('Image Generator server started on http://localhost:5000'))
+app.listen(5000, () => console.log('Server started on http://localhost:5000'));
